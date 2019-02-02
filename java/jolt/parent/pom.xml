@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bazaarvoice.commons</groupId>
+        <artifactId>bv-opensource-super-pom</artifactId>
+        <version>1.4</version>
+        <relativePath />
+        <!--an empty relativePath for the super-pom, makes maven happy -->
+    </parent>
+
+    <groupId>com.bazaarvoice.jolt</groupId>
+    <artifactId>jolt-parent</artifactId>
+    <version>0.1.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Jolt Parent</name>
+
+    <scm>
+        <url>https://github.com/bazaarvoice/jolt</url>
+        <connection>scm:git:git@github.com:bazaarvoice/jolt.git</connection>
+        <developerConnection>scm:git:git@github.com:bazaarvoice/jolt.git</developerConnection>
+      <tag>HEAD</tag>
+  </scm>
+
+    <properties>
+        <!-- Override Java compiler version from the parent super-pom. -->
+        <java.minimum.version>1.8</java.minimum.version>
+
+        <!-- core -->
+        <commons-lang3.version>3.4</commons-lang3.version>
+        <javax-inject.version>1</javax-inject.version>
+
+        <!-- module dependencies -->
+        <jackson.version>2.9.4</jackson.version>
+        <guice.version>4.1.0</guice.version>
+        <argparse4j.version>0.4.4</argparse4j.version>
+
+        <!-- TEST -->
+        <guava.version>19.0</guava.version>
+        <testng.version>6.8.21</testng.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Core -->
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax-inject.version}</version>
+            </dependency>
+
+            <!-- JSON -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- Guice integration module -->
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+
+            <!-- Cli Tools module -->
+            <dependency>
+                <groupId>net.sourceforge.argparse4j</groupId>
+                <artifactId>argparse4j</artifactId>
+                <version>${argparse4j.version}</version>
+            </dependency>
+
+            <!-- Testing -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>rat-check</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <!-- work around https://issues.apache.org/jira/browse/RAT-158 -->
+                <dependencies>
+                    <dependency>
+                      <groupId>org.apache.maven.doxia</groupId>
+                      <artifactId>doxia-core</artifactId>
+                      <version>1.6</version>
+                      <exclusions>
+                        <exclusion>
+                          <groupId>xerces</groupId>
+                          <artifactId>xercesImpl</artifactId>
+                        </exclusion>
+                      </exclusions>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- Added due to DocLint being enabled by default in Java 8; w/out this release build fails -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
