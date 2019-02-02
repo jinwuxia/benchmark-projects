@@ -1,0 +1,6 @@
+Django>=1.11
+coverage
+pytest
+pytest-cov
+pytest-django
+mock
